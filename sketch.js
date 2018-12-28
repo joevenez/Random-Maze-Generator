@@ -51,6 +51,8 @@ function createUI(){
     button.position(810 - button.width, 820);
 }
 
+
+
 //Start function
 function start(){
     stack = [];
