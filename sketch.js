@@ -1,24 +1,63 @@
 //Array of blocks
 let arr = [];
+//Canvas dimensions
 const width = 800;
 const height = 800;
+//Width of blocks
 let bWidth;
+//Height of blocks
 let bHeight;
+//Number of blocks horizontally
 let numOfHoriz;
+//Number of blocks vertically
 let numOfVert;
+//Stack for backtracking
 let stack = [];
+//Maze generation completed
 let complete = false;
+//Maze generation stated
+let started = false;
+//Speed of cursor
+let speed;
+//Dimensions of grid
+let list;
 
 //Initial startup function
 function setup(){
+    //Create canvas
     createCanvas(width + 1, height + 1);
-    start();
+    //UI Elements
+    createUI();
+    //Start function
+}
+
+//Make UI Elements
+function createUI(){
+    //Create speed slider 
+    slider = createDiv('Speed ');
+    speed = createSlider(1,20,10);
+    speed.parent(slider);
+    //Created Dimensions 
+    dropdown = createDiv('Dimensions ');
+    list = createSelect();
+    list.option('10x10', 10);
+    list.option('20x20', 20);
+    list.option('40x40', 40);
+    list.parent(dropdown);
+
+    //Create Start button 
+    button = createButton('Start');
+    button.mousePressed(start);
+    button.position(810 - button.width, 820);
 }
 
 //Start function
 function start(){
-    numOfHoriz = 40;
-    numOfVert = 40;
+    stack = [];
+    arr = [];
+    
+    numOfHoriz = list.value();
+    numOfVert = numOfHoriz;
     bWidth = Math.floor(width / numOfHoriz);
     bHeight = Math.floor(height / numOfVert);
     init2DArray(arr, numOfHoriz, numOfVert);
@@ -26,6 +65,8 @@ function start(){
     cursor = new Cursor(0,0);
     stack.push(cursor);
     arr[0][0].visited = true;
+    complete = false;
+    started = true;
 }
 
 
@@ -38,11 +79,15 @@ function draw(){
         }
     }
     //Cursor functionality
-    if(!complete){
+    if(!complete && started){
         //Draw cursor block
         fill(255,255,0);
         rect(cursor.x * bWidth + 1, cursor.y * bHeight + 1, bWidth - 1, bHeight - 1);
-        generate(cursor.x, cursor.y);
+        //Updated based on user speed
+        if(frameCount % speed.value() == 0){
+            generate(cursor.x, cursor.y);
+        }
+        
     }
     
 }
@@ -111,6 +156,7 @@ function generate(curX, curY){
         // cursor.y = stack[stack.length -1][1];
         if(stack.length < 1){
             complete = true;
+            started = false;
         }
         return 0;
     }else{
