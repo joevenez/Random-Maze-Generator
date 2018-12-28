@@ -6,9 +6,11 @@ let bWidth;
 let bHeight;
 let numOfHoriz;
 let numOfVert;
+let stack = [];
 
 //Initial startup function
 function setup(){
+    
     createCanvas(width + 1, height + 1);
     start();
 }
